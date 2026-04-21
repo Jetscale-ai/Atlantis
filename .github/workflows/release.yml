@@ -1,9 +1,11 @@
-name: Release
+name: Jetscale Atlantis Release
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch: {}
+  workflow_run:
+    workflows: ["Jetscale Atlantis Validate"]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: write
@@ -14,13 +16,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check-ci:
+    name: "Gate: Validate CI Status"
+    runs-on: namespace-profile-jetscale-validate
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    steps:
+      - run: echo "CI gate passed."
+
   release:
+    needs: [check-ci]
     runs-on: namespace-profile-jetscale-build
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -60,7 +73,7 @@ jobs:
           OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           SHA_SHORT=$(git rev-parse --short HEAD)
           IMAGE="ghcr.io/${OWNER_LC}/atlantis"
-          
+
           docker buildx build \
             --file ./Dockerfile \
             --target atlantis \

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "imports": [
+    {
+      "profile": "baseline"
+    },
+    {
+      "profile": "github-actions"
+    },
+    {
+      "profile": "docs-authoring"
+    }
+  ],
+  "skills": [],
+  "components": [
+    "skills",
+    "agents",
+    "commands",
+    "context",
+    "statuslines",
+    "settings",
+    "templates"
+  ],
+  "include": [],
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/vendor/**"
+  ]
+}

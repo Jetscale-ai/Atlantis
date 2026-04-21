@@ -1,5 +1,5 @@
 # ==========================================
-# JetScale Atlantis
+# Jetscale Atlantis
 # Atlantis with AWS CLI for EKS authentication
 # ==========================================
 #

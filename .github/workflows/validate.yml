@@ -1,0 +1,33 @@
+name: Jetscale Atlantis Validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: namespace-profile-jetscale-validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build --target atlantis -t atlantis-test .
+
+      - name: Verify AWS CLI
+        run: docker run --rm --entrypoint aws atlantis-test --version
+
+      - name: Verify Atlantis
+        run: docker run --rm --entrypoint atlantis atlantis-test version
+
+      - name: Verify aws binary path
+        run: docker run --rm --entrypoint /usr/bin/which atlantis-test aws

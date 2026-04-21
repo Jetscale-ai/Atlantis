@@ -1,14 +1,15 @@
-# Repository Constitution: Atlantis
+# Repository Constitution: Jetscale Atlantis
 
 **Status:** Draft (Unratified)  
+**Blueprint:** `library` (`.agents/codex/blueprints/library.md`)  
 **Authority:**
-[Supreme Constitution](https://github.com/Jetscale-ai/Governance/blob/main/AGENTS.md)  
-**Version:** 0.1.0  
+[Supreme Constitution](https://github.com/Jetscale-AI/Governance/blob/main/AGENTS.md)  
+**Version:** 0.2.0  
 **Risk Level:** Medium  
-**Owner:** JetScale Platform Team  
-**Deploy Target:** GHCR — custom Atlantis image with AWS CLI for EKS authentication
+**Owner:** Jetscale Platform Team  
+**Deploy Target:** `ghcr.io/jetscale-ai/atlantis`
 
-## 0. Bootstrapping (Required Context)
+## 0. Situational Awareness (Required Context)
 
 - **Universal Red Lines (excerpt)**:
   - **No Direct Commits:** Agents must never execute commits, pushes, or tags.
@@ -16,7 +17,7 @@
   - **No Impersonation:** Agents must clearly identify work as
     machine-generated.
 - **Default Failure Mode:** If instructions conflict, evidence is ambiguous, or
-  blast radius is unknown: **STOP → AUDIT → ASK**.
+  blast radius is unknown: **STOP -> AUDIT -> ASK**.
 - **Eudaimonia Framework (12 invariants):** Legitimacy, Prudence, Symbiosis,
   Clarity, Traceability, Minimalism, Testability, Sovereignty, Temporality,
   Proportionality, Interoperability, Reflexivity.
@@ -36,6 +37,9 @@
     Treat this repo as **Advisory Mode**.
   - Do not guess definitions from names or templates, and do not run additional
     commands until canonical law is retrievable.
+- **Load Local Operations (required):** Read `.agents/AGENTS.md` before giving
+  operational instructions (commands, verification steps, release flow). If it
+  is missing, treat this repo as **Advisory Mode**.
 
 ```bash
 # Tooling preflight (mandatory). STOP if any check fails.
@@ -52,75 +56,60 @@ require_cmd docker
 ```
 
 ```bash
-# Supreme Constitution
-gh api repos/Jetscale-ai/Governance/contents/AGENTS.md --jq .content | base64 -d
+# Local operational law
+sed -n '1,200p' .agents/AGENTS.md
+```
 
-# Codex (repeat for each artifact ratified below)
-gh api repos/Jetscale-ai/Governance/contents/codex/protocols/bootstrap.md --jq .content | base64 -d
-gh api repos/Jetscale-ai/Governance/contents/codex/protocols/ratification.md --jq .content | base64 -d
-gh api repos/Jetscale-ai/Governance/contents/codex/blueprints/library.md --jq .content | base64 -d
+```bash
+# Supreme Constitution
+gh api repos/Jetscale-AI/Governance/contents/AGENTS.md --jq .content | base64 -d
+
+# Codex artifacts ratified below
+gh api repos/Jetscale-AI/Governance/contents/.agents/codex/protocols/bootstrap.md --jq .content | base64 -d
+gh api repos/Jetscale-AI/Governance/contents/.agents/codex/protocols/ratification.md --jq .content | base64 -d
+gh api repos/Jetscale-AI/Governance/contents/.agents/codex/protocols/ci-monitoring.md --jq .content | base64 -d
+gh api repos/Jetscale-AI/Governance/contents/.agents/codex/blueprints/library.md --jq .content | base64 -d
 ```
 
 ## 1. Preamble & Delegation
 
 This repository does not invent governance. All agentic operations herein are
-governed by the JetScale Supreme Constitution.
+governed by the Jetscale Supreme Constitution.
 
 Until this constitution is ratified by a human commit, agents must treat this
 repository as **Advisory Mode** (read-only) per
-`codex/protocols/ratification.md`.
+`.agents/codex/protocols/ratification.md`.
 
 ## 2. Codex Ratification (The Law)
 
 This repository adopts the following Codex artifacts from
-`Jetscale-ai/Governance@main`:
+`Jetscale-AI/Governance@main`:
 
 ### Blueprints
 
-- [x] [`codex/blueprints/library.md`](https://github.com/Jetscale-ai/Governance/blob/main/codex/blueprints/library.md)
+- [x] [`.agents/codex/blueprints/library.md`](https://github.com/Jetscale-AI/Governance/blob/main/.agents/codex/blueprints/library.md)
 
 ### Protocols
 
-- [x] [`codex/protocols/bootstrap.md`](https://github.com/Jetscale-ai/Governance/blob/main/codex/protocols/bootstrap.md)
-- [x] [`codex/protocols/ratification.md`](https://github.com/Jetscale-ai/Governance/blob/main/codex/protocols/ratification.md)
+- [x] [`.agents/codex/protocols/bootstrap.md`](https://github.com/Jetscale-AI/Governance/blob/main/.agents/codex/protocols/bootstrap.md)
+- [x] [`.agents/codex/protocols/ratification.md`](https://github.com/Jetscale-AI/Governance/blob/main/.agents/codex/protocols/ratification.md)
+- [x] [`.agents/codex/protocols/ci-monitoring.md`](https://github.com/Jetscale-AI/Governance/blob/main/.agents/codex/protocols/ci-monitoring.md)
 
-## 3. Local Constraints (Docker Image)
+## 3. Local Constraints
 
 - **Single Image Target:** This repo produces one image (`atlantis`) extending
-  the official Atlantis base with AWS CLI.
-- **Upstream Tracking:** Base image version is pinned via `ARG ATLANTIS_VERSION`
-  in the Dockerfile (currently `v0.42.0`). Update this value to upgrade.
-- **Minimalism:** Add only what's necessary for EKS authentication. Avoid
-  bloating the image with unnecessary tools.
-- **Release Flow:** Image tags follow the upstream Atlantis version. Tags:
-  `:latest`, `:<atlantis-version>`, `:sha-<short>`.
+  the upstream Atlantis base with AWS CLI for EKS authentication.
+- **Version Discipline:** The Dockerfile pin in `ARG ATLANTIS_VERSION` is the
+  release source of truth. Published image tags must remain aligned to that
+  upstream Atlantis version.
+- **Minimalism:** Add only what is required for Atlantis + AWS CLI execution.
+  Avoid shipping extra tooling that expands image size or attack surface.
+- **Release Safety:** Publishing must happen only after validation has built the
+  image and exercised the installed AWS CLI.
+- **Secrets Boundary:** This repo may reference GitHub Actions secrets, but it
+  must never hardcode credentials or emit secret material in logs.
 
 ## 4. Local Operational Details
 
-### Build & Test
-
-```bash
-# Build locally
-docker build --target atlantis -t atlantis-test .
-
-# Verify AWS CLI works
-docker run --rm atlantis-test aws --version
-```
-
-### Release
-
-Releases are automated via GitHub Actions on merge to `main`. The workflow:
-
-1. Extracts `ATLANTIS_VERSION` from the Dockerfile
-2. Builds and pushes to `ghcr.io/jetscale-ai/atlantis`
-3. Tags the git commit with the Atlantis version (e.g., `v0.42.0`)
-
-### Consuming the Image
-
-Update Atlantis Helm deployment in `iac/clusters/tools`:
-
-```yaml
-image:
-  repository: ghcr.io/jetscale-ai/atlantis
-  tag: latest  # or pin to specific version
-```
+See [**`.agents/AGENTS.md`**](./.agents/AGENTS.md) for repository-specific
+verification commands, workflow expectations, and key file locations.
