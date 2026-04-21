@@ -30,4 +30,10 @@ image:
 
 ## Base Image
 
-- `ghcr.io/runatlantis/atlantis:latest`
+- `ghcr.io/runatlantis/atlantis:v0.42.0`
+
+To build with a different Atlantis version:
+
+```bash
+docker build --build-arg ATLANTIS_VERSION=v0.41.0 -t atlantis-custom .
+```

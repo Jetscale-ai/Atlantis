@@ -6,7 +6,8 @@
 # Base: Official Atlantis image
 # Added: AWS CLI v2 for `aws eks get-token` (Kubernetes exec auth)
 #
-FROM ghcr.io/runatlantis/atlantis:latest AS atlantis
+ARG ATLANTIS_VERSION=v0.42.0
+FROM ghcr.io/runatlantis/atlantis:${ATLANTIS_VERSION} AS atlantis
 
 USER root
 

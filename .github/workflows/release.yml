@@ -45,10 +45,18 @@ jobs:
         if: steps.semrel.outputs.version != ''
         uses: docker/setup-buildx-action@v3
 
+      - name: Extract Atlantis version from Dockerfile
+        if: steps.semrel.outputs.version != ''
+        id: atlantis
+        run: |
+          ATLANTIS_VERSION=$(grep -oP 'ARG ATLANTIS_VERSION=\K[^\s]+' Dockerfile)
+          echo "version=${ATLANTIS_VERSION}" >> "$GITHUB_OUTPUT"
+
       - name: Build and Push
         if: steps.semrel.outputs.version != ''
         env:
           VERSION: ${{ steps.semrel.outputs.version }}
+          ATLANTIS_VERSION: ${{ steps.atlantis.outputs.version }}
         run: |
           OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           SHA_SHORT=$(git rev-parse --short HEAD)
@@ -57,10 +65,12 @@ jobs:
           docker buildx build \
             --file ./Dockerfile \
             --target atlantis \
+            --build-arg "ATLANTIS_VERSION=${ATLANTIS_VERSION}" \
             --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
             --label "org.opencontainers.image.version=${VERSION}" \
             --label "org.opencontainers.image.revision=$(git rev-parse HEAD)" \
             --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --label "org.opencontainers.image.base.name=ghcr.io/runatlantis/atlantis:${ATLANTIS_VERSION}" \
             --push \
             --cache-from type=gha \
             --cache-to type=gha,mode=max \
