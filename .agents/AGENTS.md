@@ -25,11 +25,18 @@ docker run --rm --entrypoint /usr/bin/which atlantis-test aws
   installed tooling on pull requests and on `main`.
 - `release.yml` is publish-only. It must run only after validation succeeds on
   `main` (or via explicit manual dispatch).
-- The Dockerfile `ARG ATLANTIS_VERSION` is the image version source of truth.
+- `go-semantic-release` owns this repository's version. Its output drives the
+  git tag, the GitHub release, and the published image tag.
+- `ARG ATLANTIS_VERSION` in the Dockerfile is an independent pin of the
+  upstream Atlantis base image. It is recorded as the OCI
+  `org.opencontainers.image.base.name` label on the published image but is
+  never used as an image or git tag.
 - Published image tags are:
   - `latest`
-  - `<atlantis-version>`
+  - `<release-version>` (e.g. `v1.0.2`, from semantic-release)
   - `sha-<short-sha>`
+- Git tags and GitHub releases are pushed by semantic-release only.
+  `release.yml` does not push its own git tags.
 
 ## 3. Key File Locations
 

@@ -99,9 +99,11 @@ This repository adopts the following Codex artifacts from
 
 - **Single Image Target:** This repo produces one image (`atlantis`) extending
   the upstream Atlantis base with AWS CLI for EKS authentication.
-- **Version Discipline:** The Dockerfile pin in `ARG ATLANTIS_VERSION` is the
-  release source of truth. Published image tags must remain aligned to that
-  upstream Atlantis version.
+- **Version Discipline:** This repository releases under its own semantic
+  version, driven by `go-semantic-release`. The Dockerfile pin in
+  `ARG ATLANTIS_VERSION` is an independent upstream base-image pin, recorded on
+  the published image as `org.opencontainers.image.base.name`, and must never
+  be used as the image's own version tag.
 - **Minimalism:** Add only what is required for Atlantis + AWS CLI execution.
   Avoid shipping extra tooling that expands image size or attack surface.
 - **Release Safety:** Publishing must happen only after validation has built the
