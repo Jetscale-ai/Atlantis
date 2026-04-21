@@ -109,11 +109,13 @@ docker run --rm atlantis-test aws --version
 
 ### Release
 
-Releases are automated via GitHub Actions on merge to `main`. The workflow:
+Releases are automated via GitHub Actions on every push to `main`. The workflow:
 
 1. Extracts `ATLANTIS_VERSION` from the Dockerfile
-2. Builds and pushes to `ghcr.io/jetscale-ai/atlantis`
-3. Tags the git commit with the Atlantis version (e.g., `v0.42.0`)
+2. Builds and pushes to `ghcr.io/jetscale-ai/atlantis` with tags:
+   - `:<atlantis-version>` (e.g., `v0.42.0`)
+   - `:latest`
+   - `:sha-<short>` (commit SHA)
 
 ### Consuming the Image
 
