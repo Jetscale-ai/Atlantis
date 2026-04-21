@@ -88,12 +88,12 @@ This repository adopts the following Codex artifacts from
 
 - **Single Image Target:** This repo produces one image (`atlantis`) extending
   the official Atlantis base with AWS CLI.
-- **Upstream Tracking:** Base image is `ghcr.io/runatlantis/atlantis:latest`.
-  Consider pinning to specific versions if stability issues arise.
+- **Upstream Tracking:** Base image version is pinned via `ARG ATLANTIS_VERSION`
+  in the Dockerfile (currently `v0.42.0`). Update this value to upgrade.
 - **Minimalism:** Add only what's necessary for EKS authentication. Avoid
   bloating the image with unnecessary tools.
-- **Release Flow:** Semantic versioning via `go-semantic-release`. Tags:
-  `:latest`, `:<version>`, `:sha-<short>`.
+- **Release Flow:** Image tags follow the upstream Atlantis version. Tags:
+  `:latest`, `:<atlantis-version>`, `:sha-<short>`.
 
 ## 4. Local Operational Details
 
@@ -111,9 +111,9 @@ docker run --rm atlantis-test aws --version
 
 Releases are automated via GitHub Actions on merge to `main`. The workflow:
 
-1. Runs semantic-release to determine version bump
+1. Extracts `ATLANTIS_VERSION` from the Dockerfile
 2. Builds and pushes to `ghcr.io/jetscale-ai/atlantis`
-3. Tags the git commit with `v<version>`
+3. Tags the git commit with the Atlantis version (e.g., `v0.42.0`)
 
 ### Consuming the Image
 
