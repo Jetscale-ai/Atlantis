@@ -16,7 +16,7 @@
 > *Goal: Security and Performance.*
 
 - [ ] **Security Scan:** Ensure zero critical CVEs in the image layers.
-- [x] **Version Pinning:** Pin Atlantis base image via `ARG ATLANTIS_VERSION` (currently `v0.42.0`).
+- [x] **Version Pinning:** Pin Atlantis base image via `ARG ATLANTIS_VERSION` (ex. `v0.42.0`).
 - [ ] **Size Optimization:** Evaluate AWS CLI v2 binary installer vs pip install.
 - [x] **Validate Before Release:** Gate publishing on a successful image validation workflow.
 

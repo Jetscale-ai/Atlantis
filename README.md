@@ -36,7 +36,7 @@ image:
 
 ## Base Image
 
-- `ghcr.io/runatlantis/atlantis:v0.42.0`
+- `ghcr.io/runatlantis/atlantis:v0.48.1`
 
 Repository releases are versioned independently from the upstream Atlantis base
 image. Updating `ATLANTIS_VERSION` changes the base image used at build time,
