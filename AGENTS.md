@@ -104,10 +104,16 @@ This repository adopts the following Codex artifacts from
   `ARG ATLANTIS_VERSION` is an independent upstream base-image pin, recorded on
   the published image as `org.opencontainers.image.base.name`, and must never
   be used as the image's own version tag.
+- **Semantic Release Triggers:** Conventional Commit messages are analyzed to
+  determine the repository release version. `feat` changes trigger a minor
+  release, `fix` changes trigger a patch release, and breaking changes trigger
+  a major release. Chore-only changes do not create a release; `no change` means
+  there is no new semantic-version image tag to publish.
 - **Minimalism:** Add only what is required for Atlantis + AWS CLI execution.
   Avoid shipping extra tooling that expands image size or attack surface.
 - **Release Safety:** Publishing must happen only after validation has built the
-  image and exercised the installed AWS CLI.
+  image and exercised the installed AWS CLI. Manual release dispatches must run
+  those checks on `main` before publishing.
 - **Secrets Boundary:** This repo may reference GitHub Actions secrets, but it
   must never hardcode credentials or emit secret material in logs.
 

@@ -23,10 +23,19 @@ docker run --rm --entrypoint /usr/bin/which atlantis-test aws
 
 - `validate.yml` is the pre-release gate. It must build the image and verify the
   installed tooling on pull requests and on `main`.
-- `release.yml` is publish-only. It must run only after validation succeeds on
-  `main` (or via explicit manual dispatch).
+- `release.yml` runs only after validation succeeds on `main`, or by explicit
+  manual dispatch from `main`. Manual dispatch builds the image and verifies
+  Atlantis and AWS CLI before publishing.
 - `go-semantic-release` owns this repository's version. Its output drives the
-  git tag, the GitHub release, and the published image tag.
+  git tag, the GitHub release, and the published image version tag. Conventional
+  `feat` commits trigger minor releases, `fix` commits trigger patch releases,
+  and breaking changes trigger major releases. Chore-only changes produce no
+  new release; semantic-release reports `no change`.
+- A manual run still publishes `latest` and `sha-<short-sha>` when there is no
+  new semantic release. In that case it uses the latest existing Git release
+  version for the OCI version label and does not overwrite the existing
+  semantic-version image tag. When semantic-release creates a new version, the
+  run also publishes that version tag.
 - `ARG ATLANTIS_VERSION` in the Dockerfile is an independent pin of the
   upstream Atlantis base image. It is recorded as the OCI
   `org.opencontainers.image.base.name` label on the published image but is
