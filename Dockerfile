@@ -6,7 +6,7 @@
 # Base: Official Atlantis image
 # Added: AWS CLI v2 for `aws eks get-token` (Kubernetes exec auth)
 #
-ARG ATLANTIS_VERSION=v0.42.0
+ARG ATLANTIS_VERSION=v0.48.1 #Upcoming 0.49.0+ will not have terraform binary
 FROM ghcr.io/runatlantis/atlantis:${ATLANTIS_VERSION} AS atlantis
 
 USER root
