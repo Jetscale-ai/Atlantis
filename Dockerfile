@@ -11,6 +11,18 @@ FROM ghcr.io/runatlantis/atlantis:${ATLANTIS_VERSION} AS atlantis
 
 USER root
 
+# eMudhra intermediate compromise (2026-10-20): refresh the system trust store
+# and distrust emSign ECC Root CA - G3 (the root chaining to the compromised
+# intermediates). On the Atlantis base (Alpine 3.24) only ca-certificates-bundle
+# 20261020-r0 is fixed so far; ca-certificates is still 20260909-r0, so apply the
+# upstream-published Alpine workaround and fail the build if the root remains.
+# https://emudhra.we-have-a-problem.com/
+RUN apk upgrade --no-cache ca-certificates ca-certificates-bundle \
+    && sed -i -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' /etc/ca-certificates.conf \
+    && update-ca-certificates 2>/dev/null \
+    && rm -f /etc/ssl/certs/ca-certificates.crt.apk-new \
+    && ! grep -qF "MIICTjCCAdOgAwIBAgIKPPYHqWhwDtqLhDAKBggqhkjOPQQDAzBrMQswCQYDVQQG" /etc/ssl/certs/ca-certificates.crt
+
 # Install AWS CLI v2
 RUN apk add --no-cache \
     python3 \
