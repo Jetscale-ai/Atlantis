@@ -50,6 +50,17 @@ jobs:
           docker run --rm --entrypoint aws atlantis-test --version
           docker run --rm --entrypoint atlantis atlantis-test version
           docker run --rm --entrypoint /usr/bin/which atlantis-test aws
+          docker run --rm --entrypoint id atlantis-test
+          docker run --rm --entrypoint gcloud atlantis-test version
+          docker run --rm --entrypoint gcloud atlantis-test config get-value core/disable_usage_reporting
+          docker run --rm --entrypoint gcloud atlantis-test config get-value component_manager/disable_update_check
+          docker run --rm --entrypoint gcloud atlantis-test compute ssh --help
+          docker run --rm --entrypoint gcloud atlantis-test container clusters describe --help
+          docker run --rm --entrypoint gke-gcloud-auth-plugin atlantis-test --version
+          docker run --rm --entrypoint setsid atlantis-test --version
+          docker run --rm --entrypoint pkill atlantis-test -V
+          docker run --rm --entrypoint ssh atlantis-test -V
+          docker run --rm --entrypoint sha256sum atlantis-test --version
 
       - name: Setup Go
         uses: actions/setup-go@v5

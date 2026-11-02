@@ -1,6 +1,7 @@
 # Jetscale Atlantis
 
-Custom Atlantis image with AWS CLI for EKS authentication.
+Custom Atlantis image with AWS CLI for EKS authentication and Google Cloud CLI
+for GKE IAP access.
 
 ## Why?
 
@@ -12,12 +13,15 @@ fails with:
 executable aws not found
 ```
 
-This image adds AWS CLI v2 to the official Atlantis base.
+This image adds AWS CLI v2 and a pinned Google Cloud CLI to the official
+Atlantis base. The Cloud CLI matches the `591.0.0` linux-x86_64 archive used by
+[Jetscale-IaC pull request 391](https://github.com/Jetscale-ai/Jetscale-IaC/pull/391).
 
 ## CI
 
-- `validate.yml` builds the image and verifies both `aws` and `atlantis`
-  commands on pull requests and pushes to `main`.
+- `validate.yml` builds the image and verifies `aws`, `gcloud`,
+  `gke-gcloud-auth-plugin`, and `atlantis` on pull requests and pushes to
+  `main`.
 - `release.yml` publishes after validation succeeds on `main`. A manual run of
   this workflow from `main` performs the same image build and smoke checks before
   publishing.
@@ -50,7 +54,13 @@ image:
 ## What's Added
 
 - AWS CLI v2 (via pip)
-- Python 3 (required for AWS CLI)
+- Python 3 (required for AWS CLI and for `gcloud` on Alpine)
+- Google Cloud CLI `591.0.0` (linux-x86_64), with `gke-gcloud-auth-plugin`
+- OpenSSH client, procps (`pkill`), util-linux (`setsid`), and coreutils
+  (`sha256sum`)
+
+`bq`, `gsutil`, and the glibc bundled Python are not kept. Usage reporting and
+component update checks are disabled. The runtime user remains `atlantis`.
 
 ## Base Image
 

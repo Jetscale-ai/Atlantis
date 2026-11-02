@@ -17,15 +17,26 @@ docker run --rm --entrypoint aws atlantis-test --version
 # Verify the image still exposes Atlantis and the aws binary path
 docker run --rm --entrypoint atlantis atlantis-test version
 docker run --rm --entrypoint /usr/bin/which atlantis-test aws
+
+# Verify Google Cloud CLI, the GKE auth plugin, and the tunnel helpers.
+# The default user is atlantis.
+docker run --rm --entrypoint id atlantis-test
+docker run --rm --entrypoint gcloud atlantis-test version
+docker run --rm --entrypoint gke-gcloud-auth-plugin atlantis-test --version
+docker run --rm --entrypoint setsid atlantis-test --version
+docker run --rm --entrypoint pkill atlantis-test -V
+docker run --rm --entrypoint ssh atlantis-test -V
+docker run --rm --entrypoint sha256sum atlantis-test --version
 ```
 
 ## 2. CI and Release Expectations
 
 - `validate.yml` is the pre-release gate. It must build the image and verify the
-  installed tooling on pull requests and on `main`.
+  installed tooling, including AWS CLI and Google Cloud CLI, on pull requests
+  and on `main`.
 - `release.yml` runs only after validation succeeds on `main`, or by explicit
   manual dispatch from `main`. Manual dispatch builds the image and verifies
-  Atlantis and AWS CLI before publishing.
+  Atlantis, AWS CLI, and Google Cloud CLI before publishing.
 - `go-semantic-release` owns this repository's version. Its output drives the
   git tag, the GitHub release, and the published image version tag. Conventional
   `feat` commits trigger minor releases, `fix` commits trigger patch releases,
