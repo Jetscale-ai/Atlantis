@@ -8,6 +8,7 @@
 
 - [x] **The Blueprint:** Create `Dockerfile` extending official Atlantis with AWS CLI.
 - [x] **The Mechanics:** Install AWS CLI v2 via pip for `aws eks get-token` support.
+- [x] **GKE access:** Bake Google Cloud CLI `591.0.0` and `gke-gcloud-auth-plugin` for IAP tunnels.
 - [x] **The Spark:** Implement the `release.yml` workflow to publish to GHCR.
 - [x] **Governance Bridge:** Add repo-local governance files and `.agents` import management.
 
