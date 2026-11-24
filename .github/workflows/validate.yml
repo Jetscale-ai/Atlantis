@@ -32,6 +32,16 @@ jobs:
       - name: Verify aws binary path
         run: docker run --rm --entrypoint /usr/bin/which atlantis-test aws
 
+      - name: Verify trust store distrusts emSign ECC Root CA - G3
+        run: |
+          # One && chain: `set -e` ignores failures of `!` commands.
+          docker run --rm --entrypoint /bin/sh atlantis-test -c '
+            test -s /etc/ssl/certs/ca-certificates.crt \
+              && ! grep -qF "MIICTjCCAdOgAwIBAgIKPPYHqWhwDtqLhDAKBggqhkjOPQQDAzBrMQswCQYDVQQG" /etc/ssl/certs/ca-certificates.crt \
+              && ! test -e /etc/ssl/certs/ca-cert-emSign_ECC_Root_CA_-_G3.pem \
+              && grep -qx "!mozilla/emSign_ECC_Root_CA_-_G3.crt" /etc/ca-certificates.conf
+          '
+
       - name: Verify Google Cloud CLI
         run: |
           docker run --rm --entrypoint id atlantis-test
