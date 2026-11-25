@@ -71,7 +71,9 @@ docker run --rm --entrypoint sha256sum atlantis-test --version
 
 ## 4. Save and Handoff
 
-- Humans own commits, pushes, tags, and ratification.
+- Agents may commit and push to feature or other non-main branches. Agents
+  must never push to `main` or the default branch.
+- Humans own merges to `main`, tags, and ratification.
 - When work is ready, provide:
   - the files changed
   - the verification commands run
