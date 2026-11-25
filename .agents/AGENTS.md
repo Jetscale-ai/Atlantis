@@ -78,4 +78,4 @@ docker run --rm --entrypoint sha256sum atlantis-test --version
 - When work is ready, provide:
   - the files changed
   - the verification commands run
-  - any follow-up needed before the repo can be considered ratified
+  - any follow-up needed

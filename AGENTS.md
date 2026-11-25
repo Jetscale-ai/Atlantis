@@ -1,6 +1,6 @@
 # Repository Constitution: Jetscale Atlantis
 
-**Status:** Draft (Unratified)  
+**Status:** Ratified (2026-11-25, owner decision)  
 **Blueprint:** `library` (`.agents/codex/blueprints/library.md`)  
 **Authority:**
 [Supreme Constitution](https://github.com/Jetscale-AI/Governance/blob/main/AGENTS.md)  
@@ -78,11 +78,11 @@ gh api repos/Jetscale-AI/Governance/contents/.agents/codex/blueprints/library.md
 This repository does not invent governance. All agentic operations herein are
 governed by the Jetscale Supreme Constitution.
 
-Until this constitution is ratified by a human commit, agents must treat this
-repository as **Advisory Mode** per `.agents/codex/protocols/ratification.md`.
-Advisory Mode does not stop agents from committing and pushing to feature or
-other non-main branches (owner decision, 2026-11-25); it still bars pushes to
-`main` or the default branch, tags, and merges.
+This constitution is ratified (2026-11-25, owner decision). The repository is
+no longer in Advisory Mode for being unratified. The red lines in section 0
+still apply: agents may commit and push to feature or other non-main
+branches, and must never push to `main` or the default branch, create tags,
+or merge to `main`.
 
 ## 2. Codex Ratification (The Law)
 
